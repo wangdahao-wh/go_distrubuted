@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 )
+
 func RegisterService(r Registration) error {
 	buf := new(bytes.Buffer)
 	enc := json.NewEncoder(buf)
@@ -20,9 +21,26 @@ func RegisterService(r Registration) error {
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("Failed to register service. Registry service " + "responded with code %v",
-		res.StatusCode)
+		return fmt.Errorf("Failed to register service. Registry service "+"responded with code %v",
+			res.StatusCode)
 	}
 
+	return nil
+}
+
+func ShutdownService(url string) error {
+	req, err := http.NewRequest(http.MethodDelete, ServicesURL, bytes.NewBuffer([]byte(url)))
+	if err != nil {
+		return err
+	}
+	req.Header.Add("Content-Type", "test/plain")
+	res, err := http.DefaultClient.Do(req) // 发送请求
+	if err != nil {
+		return err
+	}
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf("Failed to unregister service. Registry service "+"responded with code %v",
+			res.StatusCode)
+	}
 	return nil
 }

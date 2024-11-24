@@ -1,15 +1,16 @@
 package main
 
 import (
-	"distributed/registry"
-	"net/http"
-	"fmt"
 	"context"
+	"distributed/registry"
+	"fmt"
 	"log"
+	"net/http"
 )
+
 func main() {
 	http.Handle("/services", &registry.RegistryService{})
-	
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -28,6 +29,6 @@ func main() {
 		srv.Shutdown(ctx)
 	}()
 
-	<- ctx.Done()
-	fmt.Println("Shutting dowm registry service.")
+	<-ctx.Done()
+	fmt.Println("Shutting down registry service.")
 }
