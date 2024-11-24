@@ -25,7 +25,7 @@ func (r *registry) add(reg Registration) error {
 	err := r.sendRequiredServices(reg)
 	r.notify(patch{
 		Added: []patchEntry{
-			patchEntry{
+			{
 				Name: reg.ServiceName,
 				URL:  reg.ServiceURL,
 			},
@@ -118,7 +118,7 @@ func (r *registry) remove(url string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("Service at URL %s not found", url)
+	return fmt.Errorf("service at URL %s not found", url)
 }
 
 var reg = registry{
