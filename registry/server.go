@@ -22,7 +22,7 @@ func (r *registry) add(reg Registration) error {
 	r.mutex.Lock()
 	r.registrations = append(r.registrations, reg)
 	r.mutex.Unlock()
-	err := r.sendRequiredServices(reg)
+	err := r.sendRequiredServices(reg) // 发送依赖服务（在进行服务注册的时候 将依赖的服务请求回来）
 	r.notify(patch{
 		Added: []patchEntry{
 			{
@@ -37,6 +37,7 @@ func (r *registry) add(reg Registration) error {
 func (r registry) notify(fullPatch patch) {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
+	fmt.Printf("this is notify\n")
 	for _, reg := range r.registrations {
 		go func(reg Registration) {
 			for _, reqService := range reg.RequiredServices {
@@ -54,6 +55,7 @@ func (r registry) notify(fullPatch patch) {
 						sendUpdate = true
 					}
 				}
+				fmt.Printf("this is notify sendUpdate = %v\n", sendUpdate)
 
 				if sendUpdate {
 					err := r.sendPatch(p, reg.ServiceUpdateURL)
@@ -94,7 +96,8 @@ func (r registry) sendPatch(p patch, url string) error {
 	if err != nil {
 		return err
 	}
-	_, err = http.Post(url, "application.json", bytes.NewBuffer(d))
+	fmt.Printf("Sending patch to %s: %s\n", url, string(d))
+	_, err = http.Post(url, "application.json", bytes.NewBuffer(d)) // 向客户端发送请求
 	if err != nil {
 		return err
 	}
@@ -140,7 +143,7 @@ func (s RegistryService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		log.Printf("Adding service: %v witch URL: %s\n", r.ServiceName, r.ServiceURL)
+		log.Printf("Adding service: 【%v】 witch URL: %s\n", r.ServiceName, r.ServiceURL)
 		err = reg.add(r)
 		if err != nil {
 			log.Println(err)

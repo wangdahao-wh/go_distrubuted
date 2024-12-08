@@ -16,6 +16,7 @@ func RegisterService(r Registration) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("serviceUpdateURL.Path = %v\n", serviceUpdateURL.Path)
 	http.Handle(serviceUpdateURL.Path, &serviceUpdateHandler{})
 
 	buf := new(bytes.Buffer)

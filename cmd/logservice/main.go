@@ -30,6 +30,7 @@ func main() {
 	)
 
 	if err != nil {
+		fmt.Println("failed to start log service")
 		stlog.Fatalln(err)
 	}
 	<-ctx.Done()

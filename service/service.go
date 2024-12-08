@@ -8,8 +8,10 @@ import (
 	"net/http"
 )
 
-func Start(ctx context.Context, host, port string,
-	reg registry.Registration, registerHandlersFunc func()) (context.Context, error) {
+func Start(ctx context.Context,
+	host, port string,
+	reg registry.Registration,
+	registerHandlersFunc func()) (context.Context, error) {
 	registerHandlersFunc()
 	ctx = startService(ctx, reg.ServiceName, host, port)
 	err := registry.RegisterService(reg)
@@ -23,6 +25,7 @@ func Start(ctx context.Context, host, port string,
 func startService(ctx context.Context, serviceName registry.ServiceName, host, port string) context.Context {
 
 	ctx, cancel := context.WithCancel(ctx)
+
 	var srv http.Server
 	srv.Addr = ":" + port
 
@@ -40,10 +43,10 @@ func startService(ctx context.Context, serviceName registry.ServiceName, host, p
 		var s string
 		fmt.Scanln(&s)
 		err := registry.ShutdownService(fmt.Sprintf("http://%s:%s", host, port))
-		if err != nil  {
+		if err != nil {
 			log.Println(err)
 		}
-		srv.Shutdown(ctx)
+		srv.Shutdown(ctx) // 优雅关闭，确保正在梳理的请求完成后再关闭服务
 		cancel()
 	}()
 

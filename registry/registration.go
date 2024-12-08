@@ -3,8 +3,8 @@ package registry
 type Registration struct {
 	ServiceName      ServiceName
 	ServiceURL       string
-	RequiredServices []ServiceName
-	ServiceUpdateURL string
+	RequiredServices []ServiceName // 当前服务依赖的服务列表
+	ServiceUpdateURL string        // 服务更新地址
 }
 
 type ServiceName string

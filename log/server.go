@@ -12,7 +12,7 @@ var log *stlog.Logger
 type fileLog string
 
 func (fl fileLog) Write(data []byte) (int, error) {
-	f, err := os.OpenFile(string(fl), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
+	f, err := os.OpenFile(string(fl), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660) // 如果文件不存在则创建，以写入模式打开文件，在文件的末尾追加写入 0660 是文件的权限，表示文件所有者和所属组有读写权限，其他人没有权限
 	if err != nil {
 		return 0, err
 	}

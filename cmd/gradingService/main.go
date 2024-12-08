@@ -31,6 +31,8 @@ func main() {
 	if logProvider, err := registry.GetProvider(registry.LogService); err == nil {
 		fmt.Printf("logging service found at %s\n", logProvider)
 		log.SetClientLogger(logProvider, r.ServiceName)
+	} else {
+		fmt.Println("logging service not found, logging disabled")
 	}
 
 	<-ctx.Done()
